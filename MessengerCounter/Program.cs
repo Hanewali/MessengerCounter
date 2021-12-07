@@ -40,7 +40,7 @@ namespace MessengerCounter
             Console.WriteLine("Arguments:");
             Console.WriteLine("-i\t--input\tInput directory &emsp; \"Messages\" directory of your Facebook data. If not provided, the app will use current location.");
             Console.WriteLine("-o\t--output\tPath to output prepared JSON file");
-            Console.WriteLine("-c\t--input\tName of conversation");
+            Console.WriteLine("-c\t--conversation\tName of conversation");
         }
     }
 }
