@@ -1,34 +1,72 @@
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace MessengerCounter
 {
     static class Program
     {
         public static string ConversationName { get; set; }
+        public static string InputPath { get; set; }
+        public static string OutputPath { get; set; }
         
         public static void Main(string[] args)
         {
+            HandleArguments(args);
 
-            if (args.Length == 0)
+            if (!string.IsNullOrWhiteSpace(ConversationName))
             {
-                Console.WriteLine("ERROR: No argument provided");
-                Console.WriteLine(Environment.NewLine);
-                DisplayHelp();
+                //todo: run
                 return;
             }
-
-            if (args.Contains("-h") || args.Contains("--help"))
-            {
-                DisplayHelp();
-            }
-            
-            if (args.Contains("-c"))
-            {
-                // Console.WriteLine("-o &emsp; --input &emsp; Input directory &emsp; \"Messages\" directory of your Facebook data");
-            }            
             
             DisplayHelp();
+        }
+
+        private static void HandleArguments(string[] arguments)
+        {
+            try
+            {
+                if (arguments.Length == 0)
+                {
+                    Console.WriteLine("ERROR: No argument provided");
+                    Console.WriteLine(Environment.NewLine);
+                    DisplayHelp();
+                    return;
+                }
+
+                if (arguments.Contains("-h") || arguments.Contains("--help"))
+                {
+                    DisplayHelp();
+                }
+
+                if (arguments.Contains("-o") || arguments.Contains("--output"))
+                {
+                    var argIndex = Array.FindIndex(arguments, x => Regex.IsMatch( x, "^(-o)|(--output)$"));
+                    OutputPath = arguments[argIndex + 1];
+                }
+                
+                if (arguments.Contains("-i") || arguments.Contains("--input"))
+                {
+                    var argIndex = Array.FindIndex(arguments, x => Regex.IsMatch( x, "^(-i)|(--input)$"));
+                    InputPath = arguments[argIndex + 1];
+                }
+                
+                if (arguments.Contains("-i") || arguments.Contains("--conversation"))
+                {
+                    var argIndex = Array.FindIndex(arguments, x => Regex.IsMatch( x, "^(-c)|(--conversation)$"));
+                    ConversationName = arguments[argIndex + 1];
+                }
+            }
+            catch(Exception ex)
+            {
+                if (!string.IsNullOrWhiteSpace(ex.Message))
+                {   
+                    Console.WriteLine(ex.Message);
+                }
+
+                throw;
+            }
         }
 
         private static void DisplayHelp()
@@ -38,9 +76,10 @@ namespace MessengerCounter
             Console.WriteLine("Please provide it with at least conversation name, according to list of arguments below.");
             Console.WriteLine(Environment.NewLine);
             Console.WriteLine("Arguments:");
-            Console.WriteLine("-i\t--input\tInput directory &emsp; \"Messages\" directory of your Facebook data. If not provided, the app will use current location.");
-            Console.WriteLine("-o\t--output\tPath to output prepared JSON file");
-            Console.WriteLine("-c\t--conversation\tName of conversation");
+            Console.WriteLine("-h \t --help \t Displays this message");
+            Console.WriteLine("-i \t --input \t Input directory \t \"Messages\" directory of your Facebook data. If not provided, the app will use current location.");
+            Console.WriteLine("-o \t --output \t Output directory \t Path to output prepared JSON file");
+            Console.WriteLine("-c \t --conversation \t Conversation name \t Name of conversation");
         }
     }
 }
