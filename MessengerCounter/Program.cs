@@ -17,6 +17,7 @@ namespace MessengerCounter
             if (!string.IsNullOrWhiteSpace(ConversationName))
             {
                 //todo: run
+                
                 return;
             }
             
@@ -78,7 +79,7 @@ namespace MessengerCounter
             Console.WriteLine("Arguments:");
             Console.WriteLine("-h \t --help \t Displays this message");
             Console.WriteLine("-i \t --input \t Input directory \t \"Messages\" directory of your Facebook data. If not provided, the app will use current location.");
-            Console.WriteLine("-o \t --output \t Output directory \t Path to output prepared JSON file");
+            Console.WriteLine("-o \t --output \t Output directory \t Path to output prepared JSON file. If not provided, the app will use current location.");
             Console.WriteLine("-c \t --conversation \t Conversation name \t Name of conversation");
         }
     }
