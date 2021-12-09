@@ -1,4 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using MessengerCounter.Dto;
 
 namespace MessengerCounter
 {
@@ -19,6 +24,7 @@ namespace MessengerCounter
             return new Analyzer(conversationName, inputPath, outputPath);
         }
 
+        public Conversation? Conversation { get; set; }
         public string ConversationName { get; set; }
         public string InputPath { get; set; }
         public string OutputPath { get; set; }
@@ -26,7 +32,27 @@ namespace MessengerCounter
         
         public void GetMessages()
         {
-            throw new System.NotImplementedException(); 
+            var files = Directory.GetFiles(InputPath, "message_*", SearchOption.TopDirectoryOnly);
+
+            var filesQueue = new Queue<string>(files);
+
+            filesQueue.TryDequeue(out var firstFilePath);
+            
+            if (filesQueue == null) throw new Exception("No conversation found!");
+            
+            Conversation = JsonSerializer.Deserialize<Conversation>(File.ReadAllText(firstFilePath));
+            
+            foreach (var file in files)
+            {
+                var conversation = JsonSerializer.Deserialize<Conversation>(file);
+
+                var messages = Conversation.Messages.ToList();
+                
+                messages.AddRange(conversation.Messages);
+
+                Conversation.Messages = messages;
+            }
+            
         }
 
         public void Analyze()
