@@ -6,9 +6,9 @@ namespace MessengerCounter
 {
     static class Program
     {
-        public static string ConversationName { get; set; }
-        public static string InputPath { get; set; }
-        public static string OutputPath { get; set; }
+        private static string? ConversationName { get; set; }
+        private static string? InputPath { get; set; }
+        private static string? OutputPath { get; set; }
         
         public static void Main(string[] args)
         {
@@ -52,7 +52,7 @@ namespace MessengerCounter
                     InputPath = arguments[argIndex + 1];
                 }
                 
-                if (arguments.Contains("-i") || arguments.Contains("--conversation"))
+                if (arguments.Contains("-c") || arguments.Contains("--conversation"))
                 {
                     var argIndex = Array.FindIndex(arguments, x => Regex.IsMatch( x, "^(-c)|(--conversation)$"));
                     ConversationName = arguments[argIndex + 1];
