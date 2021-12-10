@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace MessengerCounter.Dto
+namespace MessengerCounter.Dto.Messenger
 {
     /// <summary>
     /// Conversation image

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace MessengerCounter.Dto
+namespace MessengerCounter.Dto.Messenger
 {
     /// <summary>
     /// Main class for conversation

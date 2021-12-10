@@ -1,4 +1,4 @@
-﻿using MessengerCounter.Dto;
+﻿using MessengerCounter.Dto.Messenger;
 
 namespace MessengerCounter
 {
