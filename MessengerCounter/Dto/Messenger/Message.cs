@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace MessengerCounter.Dto.Messenger
@@ -18,7 +19,12 @@ namespace MessengerCounter.Dto.Messenger
         /// Timestampt of message sent
         /// </summary>
         [JsonPropertyName("timestamp_ms")]
-        public long Timestamp { get; set; }
+        public long TimestampMiliseconds { get; set; }
+
+        /// <summary>
+        /// Timestamp converted to datetime
+        /// </summary>
+        public DateTime Timestamp => DateTimeOffset.FromUnixTimeMilliseconds(TimestampMiliseconds).DateTime;
 
         /// <summary>
         /// Content of a messange
