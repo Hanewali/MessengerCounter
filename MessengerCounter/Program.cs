@@ -16,7 +16,11 @@ namespace MessengerCounter
 
             if (!string.IsNullOrWhiteSpace(ConversationName))
             {
-                //todo: run
+                var analyzer = Analyzer.CreateInstance(ConversationName, InputPath, OutputPath);
+
+                analyzer.GetMessages();
+                analyzer.Analyze();
+                analyzer.PrettyPrint();
                 
                 return;
             }

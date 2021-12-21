@@ -17,7 +17,7 @@ namespace MessengerCounter.Dto.Messenger
         /// Timestamp of video creation
         /// </summary>
         [JsonPropertyName("creation_timestamp")]
-        public string CreationTimestamp { get; set; }
+        public long CreationTimestamp { get; set; }
         
         /// <summary>
         /// Video thumbnail
