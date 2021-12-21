@@ -23,7 +23,7 @@ namespace MessengerCounter
         {
             if (string.IsNullOrWhiteSpace(inputPath)) inputPath = Environment.CurrentDirectory;
             if (string.IsNullOrWhiteSpace(outputPath)) outputPath = Environment.CurrentDirectory;
-            
+
             return new Analyzer(conversationName, inputPath, outputPath);
         }
 
@@ -32,8 +32,8 @@ namespace MessengerCounter
         public string InputPath { get; set; }
         public string OutputPath { get; set; }
 
-        public Result Result { get; set; }        
-        
+        public Result Result { get; set; }
+
         public void GetMessages()
         {
             var files = Directory.GetFiles(InputPath, "message_*", SearchOption.TopDirectoryOnly);
@@ -41,27 +41,30 @@ namespace MessengerCounter
             var filesQueue = new Queue<string>(files);
 
             filesQueue.TryDequeue(out var firstFilePath);
-            
+
             if (filesQueue == null) throw new Exception("No conversation found!");
-            
+
             Conversation = JsonSerializer.Deserialize<Conversation>(File.ReadAllText(firstFilePath));
-            
+
             foreach (var file in files)
             {
                 var conversation = JsonSerializer.Deserialize<Conversation>(file);
 
                 var messages = Conversation.Messages.ToList();
-                
+
                 messages.AddRange(conversation.Messages);
 
                 Conversation.Messages = messages;
             }
-            
         }
 
         public void Analyze()
         {
-            throw new System.NotImplementedException();
+            AnalyzePeriod(Period.Daily);
+            AnalyzePeriod(Period.Weekly);
+            AnalyzePeriod(Period.Monthly);
+            AnalyzePeriod(Period.Yearly);
+            AnalyzePeriod(Period.Full);
         }
 
         public void PrettyPrint()
@@ -105,19 +108,48 @@ namespace MessengerCounter
                     //reactions
                     periodicals.Add(CountByTypeForPeriod(MessageType.Reaction, dateFrom, dateTo, participant, period));
                 }
-                
             } while (dateTo < maxDate);
 
 
             foreach (var participant in Conversation.Participants)
             {
+                Result.PeriodicalResults.ToList().Add(new PeriodicalResult
+                {
+                    Sender = participant.Name,
+                    MessageType = MessageType.Text,
+                    Period = period,
+                    Count = periodicals
+                        .Where(x => x.Sender == participant.Name && x.MessageType == MessageType.Text &&
+                                    x.Period == period).Average(x => long.Parse(x.Count)).ToString()
+                });
                 
+                Result.PeriodicalResults.ToList().Add(new PeriodicalResult
+                {
+                    Sender = participant.Name,
+                    MessageType = MessageType.Media,
+                    Period = period,
+                    Count = periodicals
+                        .Where(x => x.Sender == participant.Name && x.MessageType == MessageType.Media &&
+                                    x.Period == period).Average(x => long.Parse(x.Count)).ToString()
+                });
+                
+                Result.PeriodicalResults.ToList().Add(new PeriodicalResult
+                {
+                    Sender = participant.Name,
+                    MessageType = MessageType.Reaction,
+                    Period = period,
+                    Count = periodicals
+                        .Where(x => x.Sender == participant.Name && x.MessageType == MessageType.Reaction &&
+                                    x.Period == period).Average(x => long.Parse(x.Count)).ToString()
+                });
             }
         }
 
-        private PeriodicalResult CountByTypeForPeriod(MessageType messageType, DateTime dateFrom, DateTime dateTo, Participant participant, Period period)
+        private PeriodicalResult CountByTypeForPeriod(MessageType messageType, DateTime dateFrom, DateTime dateTo,
+            Participant participant, Period period)
         {
-            var messages = Conversation.Messages.Where(x => x.SenderName == participant.Name && x.Timestamp >= dateFrom && x.Timestamp < dateTo);
+            var messages = Conversation.Messages.Where(x =>
+                x.SenderName == participant.Name && x.Timestamp >= dateFrom && x.Timestamp < dateTo);
 
             messages = messageType switch
             {
@@ -135,13 +167,13 @@ namespace MessengerCounter
                     Period = period,
                     MessageType = messageType,
                     Count = messages.Count().ToString()
-                };                
+                };
             }
 
             var reactions = new List<Reaction>();
 
             foreach (var message in messages)
-                if(message.Reactions.Any())
+                if (message.Reactions.Any())
                     reactions.AddRange(message.Reactions.Where(x => x.Actor == participant.Name));
 
             return new PeriodicalResult
