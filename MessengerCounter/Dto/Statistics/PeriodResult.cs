@@ -6,7 +6,7 @@ namespace MessengerCounter.Dto.Statistics
     {
         public Period Period { get; set; }
         public string Sender { get; set; }
-        public string Count { get; set; }
+        public double Count { get; set; }
         public MessageType MessageType { get; set; }
     }
 }

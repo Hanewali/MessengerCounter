@@ -4,6 +4,6 @@ namespace MessengerCounter.Dto.Statistics
 {
     public class Result
     {
-        public IEnumerable<PeriodicalResult> PeriodicalResults { get; set; }
+        public List<PeriodicalResult> PeriodicalResults { get; set; }
     }
 }

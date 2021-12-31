@@ -14,18 +14,11 @@ namespace MessengerCounter
         {
             HandleArguments(args);
 
-            if (!string.IsNullOrWhiteSpace(ConversationName))
-            {
-                var analyzer = Analyzer.CreateInstance(ConversationName, InputPath, OutputPath);
+            var analyzer = Analyzer.CreateInstance(ConversationName, InputPath, OutputPath);
 
-                analyzer.GetMessages();
-                analyzer.Analyze();
-                analyzer.PrettyPrint();
-                
-                return;
-            }
-            
-            DisplayHelp();
+            analyzer.GetMessages();
+            analyzer.Analyze();
+            analyzer.PrettyPrint();
         }
 
         private static void HandleArguments(string[] arguments)
