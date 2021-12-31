@@ -242,14 +242,13 @@ namespace MessengerCounter
                         Count = Math.Round(periodicals
                             .Where(x => x.Sender == participant.Name && x.MessageType == MessageType.Reaction &&
                                         x.Period == period).Average(x => x.Count), 1)
-                    });    
+                    });
                 }
                 
             }
 
             currentResult.AddRange(periodicalResults);
             Result.PeriodicalResults = currentResult;
-
         }
 
         private PeriodicalResult CountByTypeForPeriod(MessageType messageType, DateTime dateFrom, DateTime dateTo,
@@ -268,7 +267,7 @@ namespace MessengerCounter
             messagesList = messageType switch
             {
                 MessageType.Text => messagesList.Where(x => !string.IsNullOrWhiteSpace(x.Content)).ToList(),
-                MessageType.Reaction => messagesList,
+                MessageType.Reaction => messagesList.Where(x => x.Reactions != null).ToList(),
                 MessageType.Media => messagesList.Where(x => x.Photos != null).ToList(),
                 _ => throw new ArgumentOutOfRangeException(nameof(messageType), messageType, null)
             };
@@ -290,8 +289,7 @@ namespace MessengerCounter
             {
                 try
                 {
-                    if (message.Reactions.Any())
-                        reactions.AddRange(message.Reactions.Where(x => x.Actor == participant.Name));
+                    reactions.AddRange(message.Reactions.Where(x => x.Actor == participant.Name));
                 }
                 catch
                 {
