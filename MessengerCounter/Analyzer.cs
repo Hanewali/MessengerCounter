@@ -240,8 +240,10 @@ namespace MessengerCounter
                         MessageType = MessageType.Reaction,
                         Period = period,
                         Count = Math.Round(periodicals
-                            .Where(x => x.Sender == participant.Name && x.MessageType == MessageType.Reaction &&
-                                        x.Period == period).Average(x => x.Count), 1)
+                            .Where(x => x.Sender == participant.Name 
+                                        && x.MessageType == MessageType.Reaction 
+                                        && x.Period == period)
+                            .Average(x => x.Count), 1)
                     });
                 }
                 
@@ -254,8 +256,12 @@ namespace MessengerCounter
         private PeriodicalResult CountByTypeForPeriod(MessageType messageType, DateTime dateFrom, DateTime dateTo,
             Participant participant, Period period)
         {
-            var messages = Conversation.Messages.Where(x =>
-                x.SenderName == participant.Name && x.Timestamp >= dateFrom && x.Timestamp < dateTo);
+            var messages = new List<Message>();
+            
+            messages = Conversation.Messages.Where(x => x.Timestamp >= dateFrom && x.Timestamp < dateTo).ToList();
+
+            if (messageType != MessageType.Reaction)
+                messages = messages.Where(x => x.SenderName == participant.Name).ToList();
 
             var messagesList = messages.ToList();
             
